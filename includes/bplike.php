@@ -284,6 +284,18 @@ function bp_like_get_text($text = false, $type = 'custom') {
 }
 
 /**
+ * sentinel_bp_like_process()
+ *
+ * To handle a call for an unidentified type of action.
+ */
+function sentinel_bp_like_process()
+{
+    //not sure what to do for now ... I will let it be like it was before, but might be better to log the attempt
+    //for bug support.
+   die(); 
+}
+
+/**
  * bp_like_process_ajax()
  *
  * Runs the relevant function depending on what Ajax call has been made.
@@ -294,28 +306,40 @@ function bp_like_process_ajax() {
 
     $id = preg_replace("/\D/", "", $_POST['id']);
 
-    if ($_POST['type'] == 'button like')
+    switch($_POST['type'])
+    {
+   
+    case: 'button like')
         bp_like_add_user_like($id, 'activity');
+        break;
 
-    if ($_POST['type'] == 'button unlike')
+    case: 'button unlike')
         bp_like_remove_user_like($id, 'activity');
+        break;
 
-    if ($_POST['type'] == 'acomment-reply bp-primary-action like')
+    case: 'acomment-reply bp-primary-action like')
         bp_like_add_user_like($id, 'activity');
+        break;
 
-    if ($_POST['type'] == 'acomment-reply bp-primary-action unlike')
+    case: 'acomment-reply bp-primary-action unlike')
         bp_like_remove_user_like($id, 'activity');
+        break;
 
-    if ($_POST['type'] == 'button view-likes')
+    case: 'button view-likes')
         bp_like_get_likes($id, 'activity');
+        break;
 
-    if ($_POST['type'] == 'button like_blogpost')
+    case: 'button like_blogpost')
         bp_like_add_user_like($id, 'blogpost');
+        break;
 
-    if ($_POST['type'] == 'button unlike_blogpost')
+    case: 'button unlike_blogpost')
         bp_like_remove_user_like($id, 'blogpost');
+        break;
 
-    die();
+    default:
+        sentinel_bp_like_process();
+    }
 }
 
 add_action('wp_ajax_activity_like', 'bp_like_process_ajax');
